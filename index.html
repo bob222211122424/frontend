@@ -292,7 +292,7 @@
 
         let response = await fetch(APIUrl);
         let data = await response.json();
-
+        console.log(data);
         responseBox.style.whiteSpace = "normal";
         responseBox.innerHTML = marked.parse(data.answer);
 
