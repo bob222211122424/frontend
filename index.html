@@ -277,28 +277,34 @@
 
     
  async function askAI() {
-        
-  const responseBox = document.getElementById("prompt");
-  responseBox.innerText = "Request sent.";
-  let userText = document.getElementById("prompt").value;
-  let cleanText = encodeURIComponent(userText);
-  let APIUrl = "https://backend-wg4l.onrender.com/chat?prompt=" + cleanText;
-  responseBox.innerText = "Asking AI.";
-        
-  try  {
-          
-   let response = await fetch(APIUrl);
-   let data = await response.json();
-   responseBox.style.whiteSpace = "normal"; 
-   responseBox.innerHTML = marked.parse(data.answer);
-          
-   } catch (error) {
-          
-     responseBox.innerText = "Something happened when trying to connect to the AI";
-     console.error("Additional Details:", error);
-          
-   } 
-  }
+
+    const responseBox = document.getElementById("responseBox");
+
+    let userText = document.getElementById("prompt").value;
+    let cleanText = encodeURIComponent(userText);
+
+    let APIUrl =
+        "https://backend-wg4l.onrender.com/chat?prompt=" + cleanText;
+
+    responseBox.innerText = "Asking AI...";
+
+    try {
+
+        let response = await fetch(APIUrl);
+        let data = await response.json();
+
+        responseBox.style.whiteSpace = "normal";
+        responseBox.innerHTML = marked.parse(data.answer);
+
+    } catch (error) {
+
+        responseBox.innerText =
+            "Something happened when trying to connect to the AI";
+
+        console.error("Additional Details:", error);
+
+    }
+}
 </script>
 </body>
 </html>
