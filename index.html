@@ -3,8 +3,7 @@
 <head>
  <meta charset="UTF-8" />
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <!-- Adjusted jQuery script to use secure HTTPS protocol to prevent mixed-content blocks -->
- <script src="https://googleapis.com" type="text/javascript"></script>
+ <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
 
  <title>STEM AI Competition</title>
@@ -20,7 +19,7 @@
    margin: 0;
  }
  .container {
-   background: white;
+   Background: white;
    padding: 3rem;
    border-radius: 12px;
    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -74,6 +73,10 @@
  #Picture_page {
   visibility:hidden;
   display:none;
+  /* I keep ordering the club sandwich from this one place.
+  I don't know how I keep getting away with it,
+  I'm not even a member!
+  FYI: None of these comments have actual information*/
  }
 
  #Analysis_page {
@@ -87,6 +90,7 @@
  }
 </style>
 </head>
+<!-- The early bird gets the worm, but the second mouse gets the cheese -->
 <body>
 <div id="Home_page">
  <div class="container">
@@ -110,12 +114,11 @@
    <h1>STEM AI Competition</h1>
    <p>Upload your project image</p>
    <form id="uploadForm">
-     <!-- Changed accept attribute to .png, .jpg, .jpeg to match your image analysis requirements -->
-     <input id="fileInput" name="png" type="file" accept=".png, .jpg, .jpeg" required />
-     <button type="submit">Upload & Analyze</button>
+     <input id="fileInput" name="png" type="file" accept=".png" required />
+     <button type="submit">Upload</button>
    </form>
    <p id="status">Hopefully this works. Tell me if it does not.</p>
-   <button id="Moveto_Analysis">Analysis View</button>
+   <button id="Moveto_Analysis">Analysis</button>
  </div>
 </div>
 
@@ -131,6 +134,23 @@
 </div>
 
 <div id="Analysis_page">
+ <!--
+                   _                     
+                   \`*-.                 
+                    )  _`-.              
+                   .  : `. .             
+                   : _   '  \            
+                   ; *` _.   `*-._       
+                   `-.-'          `-.    
+                     ;       `       `.  
+                     :.       .        \ 
+                     . \  .   :   .-'   .
+                     '  `+.;  ;  '      :
+       [Gato]        :  '  |    ;       ;-.
+                     ; '   : :`-:     _.`* ;
+                    .*' /  .*' ; .*`- +'  `*'
+                  `*-*   `*-*  `*-*' 
+ -->
  <div class="container">
   <label for="prompt">Questions?</label>
     <br>
@@ -141,11 +161,13 @@
     <br><br>
 
     <h3>AI Response:</h3>
-    <div id="responseBox" style="padding: 15px; border: 1px solid #ccc; background: #f9f9f9; min-height: 50px; font-family: sans-serif; line-height: 1.6; text-align: left; max-height: 200px; overflow-y: auto;">
+    <div id="responseBox" style="padding: 15px; border: 1px solid #ccc; background: #f9f9f9; min-height: 50px; font-family: sans-serif; line-height: 1.6;">
       Waiting for prompt...
     </div>
 
+   <p>Nothing here right now</p>
    <p>Results</p>
+   <!--Get the thing from python-->
    <button id="Moveto_home">Return</button>
  </div>
 </div>
@@ -154,7 +176,6 @@
 <script>
  const uploadForm = document.getElementById('uploadForm');
  const statusText = document.getElementById('status');
- const responseBox = document.getElementById("responseBox");
 
  var fileInput = document.getElementById('fileInput');
 
@@ -173,26 +194,31 @@
    ClearTabs();
    Upload_page.style.visibility = "visible";
    Upload_page.style.display = "block";
+   //document.body.style.backgroundColor = "#E0D0F0";
  });
  Moveto_Picture.addEventListener("click", function Picture_Page() {
    ClearTabs();
    Picture_page.style.visibility = "visible";
    Picture_page.style.display = "block";
+   //document.body.style.backgroundColor = "#E0D0F0";
  });
  Moveto_Analysis.addEventListener("click", function Analysis_Page() {
    ClearTabs();
    Analysis_page.style.visibility = "visible";
    Analysis_page.style.display = "block";
+   //document.body.style.backgroundColor = "#EECCEE";
  });
  Moveto_Analysis2.addEventListener("click", function Analysis_Page2() {
    ClearTabs();
    Analysis_page.style.visibility = "visible";
    Analysis_page.style.display = "block";
+   //document.body.style.backgroundColor = "#EECCEE";
  });
  Moveto_Home.addEventListener("click", function Home_Page() {
    ClearTabs();
    Home_page.style.visibility = "visible";
    Home_page.style.display = "block";
+   //document.body.style.backgroundColor = "#DDDDFF";
  });
 
  function ClearTabs() {
@@ -206,78 +232,40 @@
   Analysis_page.style.display = "none";
  }
 
- // Integrated file uploading API communications directly into your native Form Submit listener
- uploadForm.addEventListener('submit', async function(event) {
+ uploadForm.addEventListener('submit', function(event) {
    event.preventDefault();
-   
-   if (fileInput.files.length === 0) {
+   const results = document.getElementById('results');
+   if (fileInput.files.length > 0) {
+     const fileName = fileInput.files[0].name;
+     statusText.style.color = "green";
+     statusText.innerText = "Success! " + fileName + " has been selected.";
+     results.style.visibility = "visible";
+     results.style.display = "block";
+     //How did I get here? I don't even like ai.
+   } else {
      statusText.style.color = "red";
      statusText.innerText = "Please select a file first.";
-     return;
-   }
-
-   const file = fileInput.files[0];
-   statusText.style.color = "blue";
-   statusText.innerText = "Uploading and processing image...";
-   responseBox.innerText = "Processing image payload...";
-
-   // 1. Pack image file with the exact parameter key matching your Python backend variable `file`
-   const formData = new FormData();
-   formData.append('file', file);
-
-   try {
-     // 2. Fetch data via POST pointing to your exact Python backend routing endpoint
-     const response = await fetch('http://127.0.0', {
-       method: 'POST',
-       body: formData
-     });
-
-     const data = await response.json();
-
-     if (data.error) {
-       statusText.style.color = "red";
-       statusText.innerText = "Error: " + data.error;
-       responseBox.innerText = "Error during analysis: " + data.error;
-     } else {
-       statusText.style.color = "green";
-       statusText.innerText = "Analysis Complete!";
-       
-       // 3. Populate your target div using the exact key returned from your Python dictionary (`data.answer`)
-       responseBox.innerText = data.answer;
-
-       // 4. Automatically transition view layout straight to the analysis window for UX fluidness
-       ClearTabs();
-       Analysis_page.style.visibility = "visible";
-       Analysis_page.style.display = "block";
-     }
-   } catch (error) {
-     console.error("Network Error:", error);
-     statusText.style.color = "red";
-     statusText.innerText = "Failed to connect to backend FastAPI server.";
-     responseBox.innerText = "Network Error.";
    }
  });
 
  const stopCam = () => {
    const video = document.getElementById('video');
    const stream = video.srcObject;
-   if (stream) {
-     const tracks = stream.getTracks();
-     tracks.forEach(track => track.stop());
-     video.srcObject = null;
-   }
+   const tracks = stream.getTracks();
+   tracks.forEach(track => track.stop());
+   video.srcObject = null;
  };
 
  const startCam = () => {
    const video = document.getElementById('video');
-   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-     navigator.mediaDevices.getUserMedia({ video: true })
-       .then(stream => {
-         video.srcObject = stream;
-       })
-       .catch(error => {
-         console.error("Something went wrong!", error);
-       });
+   if (navigator.mediaDevices.getUserMedia) {
+   navigator.mediaDevices.getUserMedia({ video: true })
+     .then(stream => {
+       video.srcObject = stream;
+     })
+     .catch(error => {
+       console.error("Something went wrong!", error);
+     });
    } else {
      console.log("getUserMedia not supported on your browser!");
    }
@@ -287,32 +275,30 @@
    startCam();
  });
 
- // Completed your trailing function logic that was cut off at the bottom of your prompt
+    
  async function askAI() {
-
-  const responseBox = document.getElementById("prompt");
+        
+  const responseBox = document.getElementById("responseBox");
   responseBox.innerText = "Request sent.";
   let userText = document.getElementById("prompt").value;
   let cleanText = encodeURIComponent(userText);
   let APIUrl = "https://backend-wg4l.onrender.com/chat?prompt=" + cleanText;
   responseBox.innerText = "Asking AI.";
+        
   try  {
-
-          let response = await fetch(APIUrl);
-          let data = await response.json();
-          responseBox.style.whiteSpace = "normal"; 
-          responseBox.innerHTML = marked.parse(data.answer);
+          
    let response = await fetch(APIUrl);
    let data = await response.json();
    responseBox.style.whiteSpace = "normal"; 
    responseBox.innerHTML = marked.parse(data.answer);
-
-        } catch (error) {
+          
+   } catch (error) {
+          
      responseBox.innerText = "Something happened when trying to connect to the AI";
      console.error("Additional Details:", error);
-
-        } 
-      }
+          
+   } 
+  }
 </script>
 </body>
 </html>
