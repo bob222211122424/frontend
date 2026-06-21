@@ -232,21 +232,55 @@
   Analysis_page.style.display = "none";
  }
 
- uploadForm.addEventListener('submit', function(event) {
-   event.preventDefault();
-   const results = document.getElementById('results');
-   if (fileInput.files.length > 0) {
-     const fileName = fileInput.files[0].name;
-     statusText.style.color = "green";
-     statusText.innerText = "Success! " + fileName + " has been selected.";
-     results.style.visibility = "visible";
-     results.style.display = "block";
-     //How did I get here? I don't even like ai.
-   } else {
-     statusText.style.color = "red";
-     statusText.innerText = "Please select a file first.";
-   }
- });
+ uploadForm.addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    if (fileInput.files.length === 0) {
+        statusText.style.color = "red";
+        statusText.innerText = "Please select a file first.";
+        return;
+    }
+
+    statusText.style.color = "black";
+    statusText.innerText = "Uploading image...";
+
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+
+    try {
+
+        const response = await fetch(
+            "https://backend-wg4l.onrender.com/analyze_bill",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const data = await response.json();
+
+        console.log(data);
+
+        statusText.style.color = "green";
+        statusText.innerText = "Image uploaded successfully.";
+
+        const responseBox = document.getElementById("responseBox");
+
+        if (data.answer) {
+            responseBox.innerHTML = marked.parse(data.answer);
+        } else {
+            responseBox.innerText =
+                data.error || "No response received.";
+        }
+
+    } catch (error) {
+
+        statusText.style.color = "red";
+        statusText.innerText = "Upload failed.";
+
+        console.error(error);
+    }
+});
 
  const stopCam = () => {
    const video = document.getElementById('video');
@@ -278,13 +312,18 @@
     
  async function askAI() {
 
-    const responseBox = document.getElementById("responseBox");
+    const responseBox =
+        document.getElementById("responseBox");
 
-    let userText = document.getElementById("prompt").value;
-    let cleanText = encodeURIComponent(userText);
+    let userText =
+        document.getElementById("prompt").value;
+
+    let cleanText =
+        encodeURIComponent(userText);
 
     let APIUrl =
-        "https://backend-wg4l.onrender.com/chat?prompt=" + cleanText;
+        "https://backend-wg4l.onrender.com/chat?prompt=" +
+        cleanText;
 
     responseBox.innerText = "Asking AI...";
 
@@ -292,16 +331,23 @@
 
         let response = await fetch(APIUrl);
         let data = await response.json();
+
         console.log(data);
-        responseBox.style.whiteSpace = "normal";
-        responseBox.innerHTML = marked.parse(data.answer);
+
+        if (data.answer) {
+            responseBox.innerHTML =
+                marked.parse(data.answer);
+        } else {
+            responseBox.innerText =
+                data.error || "No answer returned.";
+        }
 
     } catch (error) {
 
         responseBox.innerText =
             "Something happened when trying to connect to the AI";
 
-        console.error("Additional Details:", error);
+        console.error(error);
 
     }
 }
