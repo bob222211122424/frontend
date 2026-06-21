@@ -1,10 +1,158 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  </head>
-  <body>
-    <label for="prompt">Questions?</label>
+<html lang="en">
+<head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+ <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+ <title>STEM AI Competition</title>
+<style>
+ body {
+   background-color: #DDDDFF;
+   font-family: sans-serif;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   height: 100vh;
+   margin: 0;
+ }
+ .container {
+   Background: white;
+   padding: 3rem;
+   border-radius: 12px;
+   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+   text-align: center;
+   max-width: 400px;
+   width: 90%;
+   min-height: 90%;
+   margin: 5%;
+ }
+ h1 {
+   color: #333;
+   margin-top: 0;
+ }
+ h6 {
+   margin:0;
+ }
+ input[type="file"] {
+   margin: 20px 0;
+   display: block;
+   width: 100%;
+ }
+ button {
+   background-color: #5555FF;
+   color: white;
+   border: none;
+   padding: 10px 20px;
+   border-radius: 5px;
+   cursor: pointer;
+   font-size: 1rem;
+   margin-right:6%;
+   margin-left:6%;
+ }
+ button:hover {
+   background-color: #3333CC;
+ }
+ #status {
+   margin-top: 15px;
+   font-size: 0.9rem;
+ }
+
+ #Home_page {
+   visibility:visible;
+   display:block;
+ }
+
+ #Upload_page {
+   visibility:hidden;
+   display:none;
+ }
+
+ #Picture_page {
+  visibility:hidden;
+  display:none;
+  /* I keep ordering the club sandwich from this one place.
+  I don't know how I keep getting away with it,
+  I'm not even a member!
+  FYI: None of these comments have actual information*/
+ }
+
+ #Analysis_page {
+   visibility:hidden;
+   display:none;
+ }
+
+ #results {
+   visibility:hidden;
+   display:none;
+ }
+</style>
+</head>
+<!-- The early bird gets the worm, but the second mouse gets the cheese -->
+<body>
+<div id="Home_page">
+ <div class="container">
+   <h1>Title</h1>
+   <button id="Moveto_Upload">Upload</button>
+   <button id="Moveto_Picture">Picture</button><br>
+   <h2>Credits</h2>
+   <ul>
+     <li>Sahasra K</li>
+     <li>Alan Smith</li>
+     <li>Soham M</li>
+     <li>Abhiram B</li>
+     <li>Zhi X T</li>
+     <li>Gemini API</li>
+   </ul>
+ </div>
+</div>
+
+<div id="Upload_page">
+ <div class="container">
+   <h1>STEM AI Competition</h1>
+   <p>Upload your project image</p>
+   <form id="uploadForm">
+     <input id="fileInput" name="png" type="file" accept=".png" required />
+     <button type="submit">Upload</button>
+   </form>
+   <p id="status">Hopefully this works. Tell me if it does not.</p>
+   <button id="Moveto_Analysis">Analysis</button>
+ </div>
+</div>
+
+<div id="Picture_page">
+<div class="container">
+   <video id="video" width="100%" height="100%" autoplay></video>
+   <button class="btn btn-danger" onClick="stopCam()">Stop Cam</button>
+   <button class="btn btn-success" onClick="startCam()">Start Cam</button>
+   <p>Following <a href="https://www.geeksforgeeks.org/javascript/how-to-integrate-webcam-using-javascript-on-html5/">this tutorial</a></p>
+   <p>It doesn't seem to work, however</p>
+   <button id="Moveto_Analysis2">Analysis</button>
+ </div>
+</div>
+
+<div id="Analysis_page">
+ <!--
+                   _                     
+                   \`*-.                 
+                    )  _`-.              
+                   .  : `. .             
+                   : _   '  \            
+                   ; *` _.   `*-._       
+                   `-.-'          `-.    
+                     ;       `       `.  
+                     :.       .        \ 
+                     . \  .   :   .-'   .
+                     '  `+.;  ;  '      :
+       [Gato]        :  '  |    ;       ;-.
+                     ; '   : :`-:     _.`* ;
+                    .*' /  .*' ; .*`- +'  `*'
+                  `*-*   `*-*  `*-*' 
+ -->
+ <div class="container">
+  <label for="prompt">Questions?</label>
     <br>
     <textarea id="prompt" name="prompt" rows="5" cols="75" placeholder="Talk to our AI here!"></textarea>
     <br><br>
@@ -17,30 +165,140 @@
       Waiting for prompt...
     </div>
 
-    <script>
-      async function askAI() {
+   <p>Nothing here right now</p>
+   <p>Results</p>
+   <!--Get the thing from python-->
+   <button id="Moveto_home">Return</button>
+ </div>
+</div>
+
+
+<script>
+ const uploadForm = document.getElementById('uploadForm');
+ const statusText = document.getElementById('status');
+
+ var fileInput = document.getElementById('fileInput');
+
+ const Home_page = document.getElementById("Home_page");
+ const Upload_page = document.getElementById("Upload_page");
+ const Picture_page = document.getElementById("Picture_page");
+ const Analysis_page = document.getElementById("Analysis_page");
+
+ const Moveto_Home = document.getElementById("Moveto_home");
+ const Moveto_Upload = document.getElementById("Moveto_Upload");
+ const Moveto_Picture = document.getElementById("Moveto_Picture");
+ const Moveto_Analysis = document.getElementById("Moveto_Analysis");
+ const Moveto_Analysis2 = document.getElementById("Moveto_Analysis2");
+
+ Moveto_Upload.addEventListener("click", function Upload_Page() {
+   ClearTabs();
+   Upload_page.style.visibility = "visible";
+   Upload_page.style.display = "block";
+   //document.body.style.backgroundColor = "#E0D0F0";
+ });
+ Moveto_Picture.addEventListener("click", function Picture_Page() {
+   ClearTabs();
+   Picture_page.style.visibility = "visible";
+   Picture_page.style.display = "block";
+   //document.body.style.backgroundColor = "#E0D0F0";
+ });
+ Moveto_Analysis.addEventListener("click", function Analysis_Page() {
+   ClearTabs();
+   Analysis_page.style.visibility = "visible";
+   Analysis_page.style.display = "block";
+   //document.body.style.backgroundColor = "#EECCEE";
+ });
+ Moveto_Analysis2.addEventListener("click", function Analysis_Page2() {
+   ClearTabs();
+   Analysis_page.style.visibility = "visible";
+   Analysis_page.style.display = "block";
+   //document.body.style.backgroundColor = "#EECCEE";
+ });
+ Moveto_Home.addEventListener("click", function Home_Page() {
+   ClearTabs();
+   Home_page.style.visibility = "visible";
+   Home_page.style.display = "block";
+   //document.body.style.backgroundColor = "#DDDDFF";
+ });
+
+ function ClearTabs() {
+  Home_page.style.visibility = "hidden";
+  Home_page.style.display = "none";
+  Upload_page.style.visibility = "hidden";
+  Upload_page.style.display = "none";
+  Picture_page.style.visibility = "hidden";
+  Picture_page.style.display = "none";
+  Analysis_page.style.visibility = "hidden";
+  Analysis_page.style.display = "none";
+ }
+
+ uploadForm.addEventListener('submit', function(event) {
+   event.preventDefault();
+   const results = document.getElementById('results');
+   if (fileInput.files.length > 0) {
+     const fileName = fileInput.files[0].name;
+     statusText.style.color = "green";
+     statusText.innerText = "Success! " + fileName + " has been selected.";
+     results.style.visibility = "visible";
+     results.style.display = "block";
+     //How did I get here? I don't even like ai.
+   } else {
+     statusText.style.color = "red";
+     statusText.innerText = "Please select a file first.";
+   }
+ });
+
+ const stopCam = () => {
+   const video = document.getElementById('video');
+   const stream = video.srcObject;
+   const tracks = stream.getTracks();
+   tracks.forEach(track => track.stop());
+   video.srcObject = null;
+ };
+
+ const startCam = () => {
+   const video = document.getElementById('video');
+   if (navigator.mediaDevices.getUserMedia) {
+   navigator.mediaDevices.getUserMedia({ video: true })
+     .then(stream => {
+       video.srcObject = stream;
+     })
+     .catch(error => {
+       console.error("Something went wrong!", error);
+     });
+   } else {
+     console.log("getUserMedia not supported on your browser!");
+   }
+ };
+
+ $(document).ready(() => {
+   startCam();
+ });
+
+    
+ async function askAI() {
         
-        const responseBox = document.getElementById("responseBox");
-        responseBox.innerText = "Request sent.";
-        let userText = document.getElementById("prompt").value;
-        let cleanText = encodeURIComponent(userText);
-        let APIUrl = "https://backend-wg4l.onrender.com/chat?prompt=" + cleanText;
-        responseBox.innerText = "Asking AI.";
+  const responseBox = document.getElementById("responseBox");
+  responseBox.innerText = "Request sent.";
+  let userText = document.getElementById("prompt").value;
+  let cleanText = encodeURIComponent(userText);
+  let APIUrl = "https://backend-wg4l.onrender.com/chat?prompt=" + cleanText;
+  responseBox.innerText = "Asking AI.";
         
-        try  {
+  try  {
           
-          let response = await fetch(APIUrl);
-          let data = await response.json();
-          responseBox.style.whiteSpace = "normal"; 
-          responseBox.innerHTML = marked.parse(data.answer);
+   let response = await fetch(APIUrl);
+   let data = await response.json();
+   responseBox.style.whiteSpace = "normal"; 
+   responseBox.innerHTML = marked.parse(data.answer);
           
-        } catch (error) {
+   } catch (error) {
           
-          responseBox.innerText = "Something happened when trying to connect to the AI";
-          console.error("Additional Details:", error);
+     responseBox.innerText = "Something happened when trying to connect to the AI";
+     console.error("Additional Details:", error);
           
-        } 
-      }
-    </script>
-  </body>
+   } 
+  }
+</script>
+</body>
 </html>
