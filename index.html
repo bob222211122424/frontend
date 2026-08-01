@@ -73,10 +73,6 @@
  #Picture_page {
   visibility:hidden;
   display:none;
-  /* I keep ordering the club sandwich from this one place.
-  I don't know how I keep getting away with it,
-  I'm not even a member!
-  FYI: None of these comments have actual information*/
  }
 
  #Analysis_page {
@@ -90,7 +86,6 @@
  }
 </style>
 </head>
-<!-- The early bird gets the worm, but the second mouse gets the cheese -->
 <body>
 <div id="Home_page">
  <div class="container">
@@ -117,7 +112,6 @@
      <input id="fileInput" name="png" type="file" accept=".png" required />
      <button type="submit">Upload</button>
    </form>
-   <p id="status">Hopefully this works. Tell me if it does not.</p>
    <button id="Moveto_Analysis">Analysis</button>
  </div>
 </div>
@@ -127,30 +121,11 @@
    <video id="video" width="100%" height="100%" autoplay></video>
    <button class="btn btn-danger" onClick="stopCam()">Stop Cam</button>
    <button class="btn btn-success" onClick="startCam()">Start Cam</button>
-   <p>Following <a href="https://www.geeksforgeeks.org/javascript/how-to-integrate-webcam-using-javascript-on-html5/">this tutorial</a></p>
-   <p>It doesn't seem to work, however</p>
    <button id="Moveto_Analysis2">Analysis</button>
  </div>
 </div>
 
 <div id="Analysis_page">
- <!--
-                   _                     
-                   \`*-.                 
-                    )  _`-.              
-                   .  : `. .             
-                   : _   '  \            
-                   ; *` _.   `*-._       
-                   `-.-'          `-.    
-                     ;       `       `.  
-                     :.       .        \ 
-                     . \  .   :   .-'   .
-                     '  `+.;  ;  '      :
-       [Gato]        :  '  |    ;       ;-.
-                     ; '   : :`-:     _.`* ;
-                    .*' /  .*' ; .*`- +'  `*'
-                  `*-*   `*-*  `*-*' 
- -->
  <div class="container">
   <label for="prompt">Questions?</label>
     <br>
@@ -164,8 +139,6 @@
     <div id="responseBox" style="padding: 15px; border: 1px solid #ccc; background: #f9f9f9; min-height: 50px; font-family: sans-serif; line-height: 1.6;">
       Waiting for prompt...
     </div>
-
-   <!--Get the thing from python-->
    <button id="Moveto_home">Return</button>
  </div>
 </div>
@@ -192,31 +165,26 @@
    ClearTabs();
    Upload_page.style.visibility = "visible";
    Upload_page.style.display = "block";
-   //document.body.style.backgroundColor = "#E0D0F0";
  });
  Moveto_Picture.addEventListener("click", function Picture_Page() {
    ClearTabs();
    Picture_page.style.visibility = "visible";
    Picture_page.style.display = "block";
-   //document.body.style.backgroundColor = "#E0D0F0";
  });
  Moveto_Analysis.addEventListener("click", function Analysis_Page() {
    ClearTabs();
    Analysis_page.style.visibility = "visible";
    Analysis_page.style.display = "block";
-   //document.body.style.backgroundColor = "#EECCEE";
  });
  Moveto_Analysis2.addEventListener("click", function Analysis_Page2() {
    ClearTabs();
    Analysis_page.style.visibility = "visible";
    Analysis_page.style.display = "block";
-   //document.body.style.backgroundColor = "#EECCEE";
  });
  Moveto_Home.addEventListener("click", function Home_Page() {
    ClearTabs();
    Home_page.style.visibility = "visible";
    Home_page.style.display = "block";
-   //document.body.style.backgroundColor = "#DDDDFF";
  });
 
  function ClearTabs() {
